@@ -14,11 +14,15 @@ import { Task } from './task.entity';
 import { CreateTaskDto } from './create-task.dto';
 import { UpdateTaskDto } from './update-task.dto';
 
+// Decorador que marca esta clase como un controlador y define la ruta base
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) { }
+  //inyectar el servicio de tareas
+  constructor(private readonly tasksService: TasksService) {}
 
+  //ruta para crear una nueva tarea
   @Post()
+  //Usar pipes para la validacion del controlador
   @UsePipes(new ValidationPipe())
   create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
     const task = new Task();
@@ -27,18 +31,19 @@ export class TasksController {
     task.status = createTaskDto.status;
     return this.tasksService.create(task);
   }
-
+  //ruta para obtener todas la tareas
   @Get()
   findAll(): Promise<Task[]> {
     return this.tasksService.findAll();
   }
-
+  //ruta para obtener una tarea especifica a traves de su ID
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Task> {
     return this.tasksService.findOne(+id);
   }
-
+  //ruta para actualizar una tarea existente a traves de su ID
   @Patch(':id')
+  //Usar pipes para la validacion del controlador
   @UsePipes(new ValidationPipe())
   update(
     @Param('id') id: string,
@@ -50,7 +55,7 @@ export class TasksController {
     task.status = updateTaskDto.status;
     return this.tasksService.update(+id, task);
   }
-
+  //ruta para borrar una tarea por su ID
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.tasksService.remove(+id);
